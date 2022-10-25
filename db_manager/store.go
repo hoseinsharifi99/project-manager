@@ -8,3 +8,7 @@ func (d *DbManager) AddUser(user *model.User) error {
 	}
 	return nil
 }
+
+func (s *DbManager) AddProject(prj *model.Project) error {
+	return s.db.Create(prj).Error
+}

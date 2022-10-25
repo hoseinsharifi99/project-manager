@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"amani/auth"
 	"amani/db_manager"
 	"github.com/labstack/echo"
 )
@@ -18,9 +19,15 @@ func NewHandler(dm *db_manager.DbManager) *Handler {
 
 func (h *Handler) defineRoutes() {
 
+	h.ech.Use(auth.JWT())
+
+	auth.AddToWhiteList("/users/login", "POST")
+	auth.AddToWhiteList("/users", "POST")
+
 	h.ech.POST("/user", h.SignUp)
 	h.ech.POST("/user/login", h.Login)
 
+	h.ech.POST("/prj", h.CreateProject)
 }
 
 func (h *Handler) Start() {
