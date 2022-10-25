@@ -6,7 +6,7 @@ import (
 
 type UserProject struct {
 	gorm.Model
-	UserID    uint
-	ProjectID uint
+	UserID    uint `gorm:"unique_index;not null"`
+	ProjectID uint `gorm:"unique_index;not null"`
 	Duration  uint
 }

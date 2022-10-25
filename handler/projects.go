@@ -14,8 +14,8 @@ func (h *Handler) CreateProject(c echo.Context) error {
 	}
 
 	if err := h.dm.AddProject(prj); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "Error adding url to database", err)
+		return echo.NewHTTPError(http.StatusBadRequest, "Error adding project to database", err)
 	}
 
-	return c.JSON(http.StatusCreated, "URL created successfully")
+	return c.JSON(http.StatusCreated, "project created successfully")
 }
