@@ -19,6 +19,8 @@ func NewHandler(dm *db_manager.DbManager) *Handler {
 func (h *Handler) defineRoutes() {
 
 	h.ech.POST("/user", h.SignUp)
+	h.ech.POST("/user/login", h.Login)
+
 }
 
 func (h *Handler) Start() {

@@ -53,3 +53,20 @@ func CreateResponseUser(user *model.User) *UserResponse {
 	}
 	return resUser
 }
+
+func (h *Handler) Login(c echo.Context) error {
+	authRequest, err := bindToAuthRequest(c)
+	if err != nil {
+		return err
+	}
+
+	user := &model.User{
+		Username: authRequest.Username,
+		Password: authRequest.Password,
+	}
+	u, err := h.dm.GetUserByUsername(user.Username)
+	if err != nil || !u.ValidatePassword(user.Password) {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalide username or password", err)
+	}
+	return c.JSON(http.StatusOK, CreateResponseUser(u))
+}

@@ -6,7 +6,7 @@ import (
 
 type UserProject struct {
 	gorm.Model
-	UserId    uint
-	ProjectId uint
+	UserID    uint
+	ProjectID uint
 	Duration  uint
 }
