@@ -9,6 +9,13 @@ func (d *DbManager) GetUserByUsername(userName string) (*model.User, error) {
 	}
 	return user, nil
 }
+func (d *DbManager) GetUserByID(id uint) (*model.User, error) {
+	user := new(model.User)
+	if err := d.db.Where("id = ?", id).Find(&user).Error; err != nil {
+		return nil, err
+	}
+	return user, nil
+}
 
 func (d *DbManager) GetProjectByName(name string) (*model.Project, error) {
 	prj := new(model.Project)

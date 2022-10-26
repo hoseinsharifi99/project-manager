@@ -24,9 +24,14 @@ func (h *Handler) defineRoutes() {
 
 	auth.AddToWhiteList("/user/login", "POST")
 	auth.AddToWhiteList("/user", "POST")
+	auth.AddToWhiteList("/admin", "POST")
 
+	//user signup and login
 	h.ech.POST("/user", h.SignUp)
 	h.ech.POST("/user/login", h.Login)
+
+	//admin signup
+	h.ech.POST("/admin", h.SignUpAdmin)
 
 	h.ech.POST("/prj", h.CreateProject)
 

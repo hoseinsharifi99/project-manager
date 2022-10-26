@@ -22,7 +22,7 @@ func (h *Handler) work(c echo.Context) error {
 	}
 	var userprj *model.UserProject
 	userprj, err = h.dm.GetUserProjects(userID, prj.ID)
-	log.Println("in yarooooooooooooooooooooooooooooooooo")
+
 	log.Println(err)
 	if err != nil {
 		userProject := &model.UserProject{
