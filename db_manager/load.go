@@ -25,6 +25,22 @@ func (d *DbManager) GetProjectByName(name string) (*model.Project, error) {
 	return prj, nil
 }
 
+func (d *DbManager) GetProjectById(id uint) (*model.Project, error) {
+	prj := new(model.Project)
+	if err := d.db.Where("id = ?", id).Find(&prj).Error; err != nil {
+		return nil, err
+	}
+	return prj, nil
+}
+
+func (d *DbManager) GetTaskById(id uint) (*model.Task, error) {
+	tsk := new(model.Task)
+	if err := d.db.Where("id = ?", id).Find(&tsk).Error; err != nil {
+		return nil, err
+	}
+	return tsk, nil
+}
+
 func (d *DbManager) GetTaskByName(name string) (*model.Task, error) {
 	tsk := new(model.Task)
 	if err := d.db.First(tsk, model.Task{Name: name}).Error; err != nil {
@@ -43,4 +59,20 @@ func (d *DbManager) GetUserProjects(userId, prjId, tskId uint) (*model.UserProje
 
 func (d *DbManager) UpdateUserProject(uprj *model.UserProject) error {
 	return d.db.Model(uprj).Update(uprj).Error
+}
+
+func (d *DbManager) GetProjects() ([]model.Project, error) {
+	var projects []model.Project
+	if err := d.db.Model(&model.Project{}).Find(&projects).Error; err != nil {
+		return nil, err
+	}
+	return projects, nil
+}
+
+func (d *DbManager) GetTaskByUserID(id uint) ([]model.UserProject, error) {
+	var userproject []model.UserProject
+	if err := d.db.Model((&model.UserProject{})).Where("user_id = ?", id).Find(&userproject).Error; err != nil {
+		return nil, err
+	}
+	return userproject, nil
 }

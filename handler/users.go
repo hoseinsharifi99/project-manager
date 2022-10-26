@@ -5,6 +5,7 @@ import (
 	"amani/model"
 	"github.com/labstack/echo"
 	"net/http"
+	"time"
 )
 
 type userAuthRequest struct {
@@ -69,4 +70,64 @@ func (h *Handler) Login(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalide username or password", err)
 	}
 	return c.JSON(http.StatusOK, CreateResponseUser(u))
+}
+
+func (h *Handler) UserTasks(c echo.Context) error {
+	userID := extractID(c)
+	userProject, err := h.dm.GetTaskByUserID(userID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Error retrieving usertasks from database", err)
+	}
+	response := h.NewUserTasksListResponse(userProject)
+	return c.JSON(http.StatusOK, response)
+}
+
+type userTaskResponse struct {
+	ID          int       `json:"id"`
+	UserName    string    `json:"username"`
+	ProjectName string    `json:"project"`
+	TaskName    string    `json:"task"`
+	CreatedAt   time.Time `json:"created_at"`
+	LastUpdate  time.Time `json:"last_update"`
+	Duration    int       `json:"duration"`
+}
+
+func NewtaskResponse(prj *model.Project, task *model.Task, up *model.UserProject, user *model.User) *userTaskResponse {
+	return &userTaskResponse{
+		ID:          int(up.ID),
+		UserName:    user.Username,
+		ProjectName: prj.Name,
+		TaskName:    task.Name,
+		CreatedAt:   up.CreatedAt,
+		LastUpdate:  up.UpdatedAt,
+		Duration:    int(up.Duration),
+	}
+}
+
+func (h *Handler) NewUserTasksListResponse(list []model.UserProject) *userTaskListResponse {
+	prjs := make([]*userTaskResponse, 0)
+	for i, uprj := range list {
+		user, err := h.dm.GetUserByID(uprj.UserID)
+		if err != nil {
+			return nil
+		}
+		prj, err := h.dm.GetProjectById(uprj.ProjectID)
+		if err != nil {
+			return nil
+		}
+		tsk, err := h.dm.GetTaskById(uprj.TaskID)
+		if err != nil {
+			return nil
+		}
+		prjs = append(prjs, NewtaskResponse(prj, tsk, &list[i], user))
+	}
+	return &userTaskListResponse{
+		Projects: prjs,
+		PrjCount: len(prjs),
+	}
+}
+
+type userTaskListResponse struct {
+	Projects []*userTaskResponse `json:"user-tasks"`
+	PrjCount int                 `json:"tasks_count"`
 }

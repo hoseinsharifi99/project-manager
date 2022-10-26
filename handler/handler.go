@@ -33,10 +33,18 @@ func (h *Handler) defineRoutes() {
 	//admin signup
 	h.ech.POST("/admin", h.SignUpAdmin)
 
+	//create task and project
 	h.ech.POST("/prj", h.CreateProject)
 	h.ech.POST("/task", h.CreateTask)
 
+	//do task
 	h.ech.POST("/work", h.work)
+
+	//get all project
+	h.ech.GET("/prj", h.FetchALlProject)
+
+	//get task that user do
+	h.ech.GET("/user/task", h.UserTasks)
 }
 
 func (h *Handler) Start() {
