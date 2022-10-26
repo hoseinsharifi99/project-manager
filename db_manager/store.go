@@ -16,3 +16,7 @@ func (s *DbManager) AddProject(prj *model.Project) error {
 func (s *DbManager) AddUserProjec(userProject *model.UserProject) error {
 	return s.db.Create(userProject).Error
 }
+
+func (s *DbManager) AddTask(task *model.Task) error {
+	return s.db.Create(task).Error
+}
