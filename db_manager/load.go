@@ -76,3 +76,15 @@ func (d *DbManager) GetTaskByUserID(id uint) ([]model.UserProject, error) {
 	}
 	return userproject, nil
 }
+
+func (d *DbManager) GetTasksByProjectName(name string) ([]model.Task, error) {
+	prj := new(model.Project)
+	if err := d.db.First(prj, model.Project{Name: name}).Error; err != nil {
+		return nil, err
+	}
+	var tasklist []model.Task
+	if err := d.db.Model((&model.Task{})).Where("project_id = ?", prj.ID).Find(&tasklist).Error; err != nil {
+		return nil, err
+	}
+	return tasklist, nil
+}

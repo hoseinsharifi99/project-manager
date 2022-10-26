@@ -45,6 +45,8 @@ func (h *Handler) defineRoutes() {
 
 	//get task that user do
 	h.ech.GET("/user/task", h.UserTasks)
+
+	h.ech.POST("/prj/tasks", h.TaskOfProject)
 }
 
 func (h *Handler) Start() {
