@@ -16,21 +16,27 @@ func (h *Handler) work(c echo.Context) error {
 	}
 
 	var prj *model.Project
-	prj, err = h.dm.GetProjectByName(req.Name)
+	prj, err = h.dm.GetProjectByName(req.PrjName)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "prj doesnt exit", err)
 	}
+
+	var tsk *model.Task
+	tsk, err = h.dm.GetTaskByName(req.TaskName)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "task doesnt exit", err)
+	}
+
 	var userprj *model.UserProject
-	userprj, err = h.dm.GetUserProjects(userID, prj.ID)
+	userprj, err = h.dm.GetUserProjects(userID, prj.ID, tsk.ID)
 
 	log.Println(err)
 	if err != nil {
 		userProject := &model.UserProject{
-			UserID:      userID,
-			ProjectID:   prj.ID,
-			Name:        req.Name,
-			Description: req.Description,
-			Duration:    req.Duration,
+			UserID:    userID,
+			ProjectID: prj.ID,
+			TaskID:    tsk.ID,
+			Duration:  req.Duration,
 		}
 		if err := h.dm.AddUserProjec(userProject); err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, "Error adding userprj to database", err)
@@ -47,9 +53,9 @@ func (h *Handler) work(c echo.Context) error {
 }
 
 type userProjectRequest struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Duration    uint   `json:"duration"`
+	PrjName  string `json:"name"`
+	TaskName string `json:"task"`
+	Duration uint   `json:"duration"`
 }
 
 func bindToUserProjectCreateRequest(c echo.Context) (*userProjectRequest, error) {

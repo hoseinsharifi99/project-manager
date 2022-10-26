@@ -25,9 +25,17 @@ func (d *DbManager) GetProjectByName(name string) (*model.Project, error) {
 	return prj, nil
 }
 
-func (d *DbManager) GetUserProjects(userId, prjId uint) (*model.UserProject, error) {
+func (d *DbManager) GetTaskByName(name string) (*model.Task, error) {
+	tsk := new(model.Task)
+	if err := d.db.First(tsk, model.Task{Name: name}).Error; err != nil {
+		return nil, err
+	}
+	return tsk, nil
+}
+
+func (d *DbManager) GetUserProjects(userId, prjId, tskId uint) (*model.UserProject, error) {
 	prj := new(model.UserProject)
-	if err := d.db.Where("user_id = ? AND project_id = ?", userId, prjId).Find(&prj).Error; err != nil {
+	if err := d.db.Where("user_id = ? AND project_id = ? AND task_id = ?", userId, prjId, tskId).Find(&prj).Error; err != nil {
 		return nil, err
 	}
 	return prj, nil
