@@ -25,5 +25,5 @@ func NewDb(name string) *gorm.DB {
 }
 
 func migrate(db *gorm.DB) {
-	db.AutoMigrate(model.User{}, model.Project{}, model.UserProject{})
+	db.AutoMigrate(model.User{}, model.Project{}, model.UserProject{}, model.Task{})
 }

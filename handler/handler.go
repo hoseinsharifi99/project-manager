@@ -34,6 +34,7 @@ func (h *Handler) defineRoutes() {
 	h.ech.POST("/admin", h.SignUpAdmin)
 
 	h.ech.POST("/prj", h.CreateProject)
+	h.ech.POST("/task", h.CreateTask)
 
 	h.ech.POST("/work", h.work)
 }
