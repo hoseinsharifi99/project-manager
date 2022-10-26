@@ -10,7 +10,7 @@ import (
 func (h *Handler) work(c echo.Context) error {
 	userID := extractID(c)
 
-	req, err := bindToUrlCreateRequest(c)
+	req, err := bindToUserProjectCreateRequest(c)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, " invalid prj", err)
 	}
@@ -26,9 +26,11 @@ func (h *Handler) work(c echo.Context) error {
 	log.Println(err)
 	if err != nil {
 		userProject := &model.UserProject{
-			UserID:    userID,
-			ProjectID: prj.ID,
-			Duration:  req.Duration,
+			UserID:      userID,
+			ProjectID:   prj.ID,
+			Name:        req.Name,
+			Description: req.Description,
+			Duration:    req.Duration,
 		}
 		if err := h.dm.AddUserProjec(userProject); err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, "Error adding userprj to database", err)
@@ -45,11 +47,12 @@ func (h *Handler) work(c echo.Context) error {
 }
 
 type userProjectRequest struct {
-	Name     string `json:"name"`
-	Duration uint   `json:"duration"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Duration    uint   `json:"duration"`
 }
 
-func bindToUrlCreateRequest(c echo.Context) (*userProjectRequest, error) {
+func bindToUserProjectCreateRequest(c echo.Context) (*userProjectRequest, error) {
 	request := &userProjectRequest{}
 	if err := c.Bind(request); err != nil {
 		echo.NewHTTPError(http.StatusBadRequest, "error binding request", err)
